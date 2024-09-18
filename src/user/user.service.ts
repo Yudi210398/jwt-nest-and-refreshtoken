@@ -2,6 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { AdminDto } from 'src/dto/user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { hash } from 'bcrypt';
+
 @Injectable()
 export class UserService {
   constructor(private prismaService: PrismaService) {}
@@ -24,5 +25,9 @@ export class UserService {
       result,
       message: 'Sukses',
     };
+  }
+
+  async getAdmin() {
+    return await this.prismaService.admin.findMany({});
   }
 }

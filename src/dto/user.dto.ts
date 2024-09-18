@@ -5,6 +5,6 @@ export class AdminDto {
   @IsEmail({}, { message: 'Ini bukan format email' })
   email: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Password gk boleh kosong' })
   password: string;
 }
