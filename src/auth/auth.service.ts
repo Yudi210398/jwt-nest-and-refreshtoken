@@ -45,4 +45,5 @@ export class AuthService {
       HttpStatus.UNAUTHORIZED,
     );
   }
+  async refreshTokenCall() {}
 }

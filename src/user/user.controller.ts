@@ -27,7 +27,6 @@ export class UserController {
   @Get()
   async getAdmin(@Req() req: Request) {
     const user = req['admin']?.email;
-    console.log(user);
     return this.serviceUser.getAdmin();
   }
 }
