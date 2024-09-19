@@ -9,7 +9,18 @@ export class AuthService {
     private prismaSevice: PrismaService,
     private jwtservice: JwtService,
   ) {}
-
+  async refreshTokenCall(admin: any) {
+    const payload = {
+      email: admin.email,
+    };
+    return {
+      email: admin?.email,
+      accesToken: await this.jwtservice.signAsync(payload, {
+        expiresIn: '1m',
+        secret: process.env.ACCES_TOKEN,
+      }),
+    };
+  }
   async loginAdmin(data: AdminDto) {
     const admin = await this.validateUser(data);
 
@@ -17,18 +28,25 @@ export class AuthService {
       email: admin.email,
     };
 
+    const refreshToken = await this.jwtservice.signAsync(payload, {
+      expiresIn: '7d',
+      secret: process.env.REFRESH_TOKEN,
+    });
+
+    await this.prismaSevice.admin.update({
+      where: { email: data.email },
+      data: { refreshToken: refreshToken },
+    });
+
     return {
       email: admin.email,
       allToken: {
         accesToken: await this.jwtservice.signAsync(payload, {
-          expiresIn: '20m',
+          expiresIn: '1m',
           secret: process.env.ACCES_TOKEN,
         }),
 
-        refreshToken: await this.jwtservice.signAsync(payload, {
-          expiresIn: '7d',
-          secret: process.env.REFRESH_TOKEN,
-        }),
+        refreshToken,
       },
     };
   }
@@ -45,5 +63,4 @@ export class AuthService {
       HttpStatus.UNAUTHORIZED,
     );
   }
-  async refreshTokenCall() {}
 }
